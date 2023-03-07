@@ -8,6 +8,8 @@
       <h1 class="text-center fw-bold">LOGIN</h1>
       <p class="text-center lead">Faça login ou crie sua conta abaixo.</p>
 
+      <%- include('./includes/msgs');  %>
+
       <div class="row">
         <div class="col-lg my-5">
           <h4>Realize seu cadastro.</h4>
@@ -25,7 +27,7 @@
             </div>
             <div class="mb-3">
               <label>Confirmar senha</label>
-              <input type="password" class="form-control" name="confirm-password">
+              <input type="password" class="form-control" name="confirmPassword">
             </div>
             <button type="submit" class="btn btn-primary">Criar conta</button>
           </form>

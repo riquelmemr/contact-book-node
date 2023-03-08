@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
+const bcryptjs = require('bcryptjs');
 
 const LoginSchema = new mongoose.Schema({
   email: { type: String, required: true },
@@ -17,17 +18,47 @@ class Login {
   }
 
   async register() {
-    this.validate();
+    this.validate(false);
     if (this.errors.length > 0) return;
 
-    try {
-      this.user = await LoginModel.create(this.body);
-    } catch (e) {
-      console.log(e);
+    await this.userExists();
+    if (this.errors.length > 0) return;
+
+    this.setPasswordsCode();
+
+    this.user = await LoginModel.create(this.body);
+  }
+
+  async connect() {
+    this.validate(true);
+    if (this.errors.length > 0) return;
+
+    this.user = await LoginModel.findOne({ email: this.body.email });
+
+    if (!this.user) {
+      this.errors.push('Usuário não cadastrado.');
+      return;
+    }
+
+    if (!bcryptjs.compareSync(this.body.password, this.user.password)) {
+      this.errors.push('Senha inválida. Tente novamente!');
+      this.user = null; 
+      return;
     }
   }
 
-  validate() {
+  async userExists() {
+    this.user = await LoginModel.findOne({ email: this.body.email });
+    if (this.user) this.errors.push('Usuário já utilizado. Tente novamente!');
+  }
+
+  setPasswordsCode() {
+    const salt = bcryptjs.genSaltSync();
+    this.body.password = bcryptjs.hashSync(this.body.password, salt);
+    this.body.confirmPassword  = bcryptjs.hashSync(this.body.confirmPassword, salt);
+  }
+
+  validate(ifLogin) {
     this.cleanUp();
 
     if (!validator.isEmail(this.body.email)) this.errors.push('E-mail inválido.');
@@ -36,8 +67,10 @@ class Login {
       this.errors.push('Senha inválida. Sua senha precisa ter entre 5 e 50 caracteres.');
     }
 
-    if (this.body.password !== this.body.confirmPassword) {
-      this.errors.push('Senha inválida. Suas senhas precisam ser iguais.');
+    if (!ifLogin) {
+      if (this.body.password !== this.body.confirmPassword) {
+        this.errors.push('Senha inválida. Suas senhas precisam ser iguais.');
+      }
     }
   }
 

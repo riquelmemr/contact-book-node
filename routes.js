@@ -7,5 +7,7 @@ routes.get('/', homeController.index);
 
 routes.get('/login/index', loginController.index);
 routes.post('/login/register', loginController.register);
+routes.post('/login/connect', loginController.connect);
+routes.get('/login/logout', loginController.logout);
 
 module.exports = routes;

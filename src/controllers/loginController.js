@@ -13,7 +13,7 @@ exports.register = async (req, res) => {
     if (login.errors.length > 0) {
       req.flash('errors', login.errors);
       req.session.save(() => {
-        return res.redirect('/login/index');
+        return res.redirect('back');
       });
       
       return;
@@ -21,7 +21,7 @@ exports.register = async (req, res) => {
   
     req.flash('success', 'Seu usuário foi criado com sucesso!');
     req.session.save(() => {
-      return res.redirect('/login/index');
+      return res.redirect('back');
     });
   }
   catch (e) {
@@ -38,7 +38,7 @@ exports.connect = async (req, res) => {
     if (login.errors.length > 0) {
       req.flash('errors', login.errors);
       req.session.save(() => {
-        return res.redirect('/login/index');
+        return res.redirect('back');
       });
       
       return;
@@ -47,7 +47,7 @@ exports.connect = async (req, res) => {
     req.flash('success', 'Bem vindo! Logado com sucesso.');
     req.session.user = login.user;
     req.session.save(() => {
-      return res.redirect('/login/index');
+      return res.redirect('back');
     });
   }
   catch (e) {

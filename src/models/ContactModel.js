@@ -31,7 +31,7 @@ class Contact {
 
     if (this.body.email && !validator.isEmail(this.body.email)) this.errors.push('E-mail inválido.');
     if (!this.body.name) this.errors.push('O campo nome é um campo obrigatório');
-    if (!this.body.email && !this.body.phone) this.errors.push('Pelo menos um dos campos (email e telefone precisam ser preenchidos.');
+    if (!this.body.email && !this.body.phone) this.errors.push('Pelo menos um dos campos (email ou telefone) precisam ser preenchidos.');
   }
 
   cleanUp() {
@@ -48,6 +48,27 @@ class Contact {
       phone: this.body.phone
     }
   }
+
+  async update(id) {
+    if (typeof id !== 'string') return;
+
+    this.validate();
+    if (this.errors.length > 0) return;
+
+    this.contact = await ContactModel.findByIdAndUpdate(id, this.body, { new: true });
+  }
 }
+
+Contact.findIdModel = async (id) => {
+  if (typeof id !== 'string') return;
+
+  const contact = await ContactModel.findById(id);
+  return contact;
+}
+
+Contact.findAllContactModel = async () => {
+  const contacts = await ContactModel.find().sort({ creationDate: -1 });
+  return contacts;
+};
 
 module.exports = Contact;

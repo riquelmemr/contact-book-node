@@ -12,12 +12,22 @@
 
       <div class="responsive-table">
         <table class="table table-hover my-3">
-          <tr>
-            <td>Luiz</td>
-            <td>Otávio</td>
-            <td>(51) 98043-2298</td>
-            <td>luizotavio@gmail.com</td>
-          </tr>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>LastName</th>
+              <th>Phone</th>
+              <th>E-mail</th>
+            </tr>
+          </thead>
+          <% contacts.forEach(contact => { %>
+            <tr>
+              <td><%= contact.name %></td>
+              <td><%= contact.lastName %></td>
+              <td><%= contact.phone %></td>
+              <td><%= contact.email %></td>
+            </tr>
+          <% }); %>
         </table>
       </div>
     </div>

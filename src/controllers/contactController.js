@@ -31,16 +31,14 @@ exports.updateIndex = async (req, res) => {
   if (!urlId) return res.render("404");
 
   const contact = await Contact.findIdModel(urlId);
-
   if (!contact) return res.render("404");
 
   res.render("contacts", { contact });
 };
 
-exports.update = async (req, res) => {
+exports.updateContact = async (req, res) => {
   try {
     const urlId = req.params.id;
-    console.log(urlId);
     if (!urlId) return res.render("404");
   
     const contact = new Contact(req.body);
@@ -60,3 +58,15 @@ exports.update = async (req, res) => {
     return res.render("404");
   }
 }
+
+exports.deleteContact = async (req, res) => {
+  const urlId = req.params.id;
+  if (!urlId) return res.render("404");
+
+  const contact = await Contact.deleteContactModel(urlId);
+  if (!contact) return res.render("404");
+
+  req.flash("success", "Contato apagado com sucesso!");
+  req.session.save(() => res.redirect("back"));
+  return;
+};
